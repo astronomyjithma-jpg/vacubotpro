@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VacuBot Pro — Smart Vacuum Robot</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0A0E1A;
+    --navy-mid: #131929;
+    --navy-light: #1E2840;
+    --cyan: #00D4FF;
+    --cyan-dim: #00A8CC;
+    --gold: #FFB800;
+    --white: #F0F4FF;
+    --slate: #3D4A6B;
+    --slate-light: #6B7FA8;
+    --text-muted: #8A9BC0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.25rem 3rem;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,212,255,0.1);
+  }
+  .nav-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 0.08em;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500; letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg-grid {
+    position: absolute; inset: -60px;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridDrift 6s linear infinite;
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%, -60%);
+    pointer-events: none;
+    animation: glowPulse 5s ease-in-out infinite;
+  }
+  .hero-eyebrow {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: ''; display: block; height: 1px; background: var(--cyan);
+    width: 0; opacity: 0;
+    animation: eyebrowLine 0.6s ease forwards;
+    animation-delay: 0.5s;
+  }
+  .hero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2.5rem, 7vw, 5.5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    position: relative;
+    margin-bottom: 0.25rem;
+  }
+  .hero h1 .accent { color: var(--cyan); }
+  .hero-sub {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1rem, 3vw, 2rem);
+    font-weight: 400;
+    color: var(--slate-light);
+    letter-spacing: 0.05em;
+    margin-bottom: 1.75rem;
+    position: relative;
+  }
+  .hero-desc {
+    font-size: 1.05rem; color: var(--text-muted);
+    max-width: 540px; line-height: 1.7;
+    position: relative; margin-bottom: 3rem;
+  }
+  .hero-ctas {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    position: relative;
+  }
+  .btn-primary {
+    background: var(--cyan); color: var(--navy);
+    font-family: 'Inter', sans-serif; font-weight: 700;
+    font-size: 0.875rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.875rem 2.25rem; border: none; cursor: pointer;
+    text-decoration: none; display: inline-block;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: #33DDFF; transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: var(--cyan);
+    font-family: 'Inter', sans-serif; font-weight: 600;
+    font-size: 0.875rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.875rem 2.25rem;
+    border: 1px solid rgba(0,212,255,0.4);
+    cursor: pointer; text-decoration: none; display: inline-block;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  }
+  .btn-outline:hover {
+    border-color: var(--cyan); background: rgba(0,212,255,0.08); transform: translateY(-2px);
+  }
+
+  /* ROBOT SVG wrapper */
+  .robot-wrap {
+    position: relative; margin: 3.5rem auto 0; width: 280px; height: 280px;
+  }
+  .robot-wrap svg { width: 100%; height: 100%; }
+  .robot-pulse {
+    position: absolute; inset: -20px; border-radius: 50%;
+    border: 1px solid rgba(0,212,255,0.2);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  .robot-pulse:nth-child(2) { inset: -40px; animation-delay: 0.8s; }
+  .robot-pulse:nth-child(3) { inset: -60px; animation-delay: 1.6s; }
+  @keyframes pulse {
+    0%, 100% { opacity: 0; transform: scale(0.95); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-14px); }
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes brush {
+    0%, 100% { transform: rotate(-20deg); }
+    50% { transform: rotate(20deg); }
+  }
+  @keyframes scan {
+    0% { opacity: 0; transform: translateY(-30px); }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; transform: translateY(30px); }
+  }
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes gridDrift {
+    0% { background-position: 0 0; }
+    100% { background-position: 60px 60px; }
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.6; transform: translate(-50%, -60%) scale(1); }
+    50% { opacity: 1; transform: translate(-50%, -60%) scale(1.15); }
+  }
+  @keyframes particleRise {
+    0% { transform: translateY(0) translateX(0); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-620px) translateX(var(--drift, 20px)); opacity: 0; }
+  }
+  @keyframes eyebrowLine {
+    0% { width: 0; opacity: 0; }
+    100% { width: 40px; opacity: 0.5; }
+  }
+
+  .hero-particles {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  }
+  .hero-particle {
+    position: absolute;
+    bottom: -20px;
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--cyan);
+    box-shadow: 0 0 8px 2px rgba(0,212,255,0.6);
+    animation: particleRise linear infinite;
+  }
+
+  .hero-eyebrow, .hero h1, .hero-sub, .hero-desc, .hero-ctas, .robot-wrap {
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards;
+  }
+  .hero-eyebrow { animation-delay: 0.1s; }
+  .hero h1 { animation-delay: 0.28s; }
+  .hero-sub { animation-delay: 0.46s; }
+  .hero-desc { animation-delay: 0.64s; }
+  .hero-ctas { animation-delay: 0.82s; }
+  .robot-wrap { animation: fadeUp 0.9s ease forwards, float 3.5s ease-in-out 0.9s infinite; animation-delay: 1s, 1s; }
+
+  /* SECTION COMMONS */
+  section { padding: 6rem 2rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--cyan); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 700; line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .section-desc { color: var(--text-muted); max-width: 520px; line-height: 1.7; }
+
+  /* FEATURES */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5px;
+    margin-top: 4rem;
+    background: var(--slate);
+  }
+  .feature-card {
+    background: var(--navy-mid);
+    padding: 2.5rem 2rem;
+    position: relative; overflow: hidden;
+    transition: background 0.25s;
+  }
+  .feature-card:hover { background: var(--navy-light); }
+  .feature-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--cyan);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .feature-card:hover::before { transform: scaleX(1); }
+  .feature-icon {
+    width: 48px; height: 48px; margin-bottom: 1.5rem;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(0,212,255,0.25);
+    color: var(--cyan); font-size: 1.4rem;
+  }
+  .feature-num {
+    position: absolute; top: 1.75rem; right: 2rem;
+    font-family: 'Orbitron', sans-serif; font-size: 3rem; font-weight: 900;
+    color: rgba(0,212,255,0.05);
+  }
+  .feature-card h3 {
+    font-size: 1.05rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--white);
+  }
+  .feature-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+
+  /* SPECS */
+  .specs { background: var(--navy-mid); }
+  .specs-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+  .specs-table { margin-top: 2.5rem; }
+  .spec-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-key { font-size: 0.85rem; color: var(--text-muted); font-weight: 400; }
+  .spec-val { font-size: 0.9rem; color: var(--white); font-weight: 600; font-family: 'Orbitron', sans-serif; letter-spacing: 0.04em; }
+
+  .stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+  }
+  .stat-card {
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.12);
+    padding: 2rem 1.5rem;
+    text-align: center;
+  }
+  .stat-number {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 2.5rem; font-weight: 900;
+    color: var(--cyan); line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .stat-label { font-size: 0.78rem; color: var(--text-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  /* TECH PROCESS */
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0;
+    margin-top: 4rem;
+    position: relative;
+  }
+  .process-steps::before {
+    content: '';
+    position: absolute; top: 32px; left: 10%; right: 10%; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    opacity: 0.3;
+  }
+  .process-step { text-align: center; padding: 0 1rem; }
+  .step-dot {
+    width: 64px; height: 64px; margin: 0 auto 1.5rem;
+    border: 1px solid rgba(0,212,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; background: var(--navy-mid);
+    font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--cyan);
+  }
+  .step-dot::after {
+    content: '';
+    position: absolute; inset: -4px;
+    border: 1px solid rgba(0,212,255,0.1);
+  }
+  .process-step h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--white); }
+  .process-step p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* GALLERY */
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 200px 200px;
+    gap: 4px;
+    margin-top: 3.5rem;
+  }
+  .gallery-item {
+    background: var(--navy-light);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    border: 1px solid rgba(0,212,255,0.08);
+  }
+  .gallery-item:first-child { grid-row: 1 / 3; }
+  .gallery-item svg { width: 60%; height: 60%; opacity: 0.6; }
+  .gallery-item:hover { border-color: rgba(0,212,255,0.3); }
+  .gallery-label {
+    position: absolute; bottom: 0.75rem; left: 0.75rem;
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-muted); font-weight: 600;
+  }
+
+  /* TEAM */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.5px;
+    margin-top: 4rem;
+    background: var(--slate);
+  }
+  .team-card {
+    background: var(--navy-mid);
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+    transition: background 0.25s;
+  }
+  .team-card:hover { background: var(--navy-light); }
+  .team-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--cyan);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .team-card:hover::before { transform: scaleX(1); }
+  .team-photo {
+    width: 110px; height: 110px; margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    position: relative;
+    display: flex; align-items: center; justify-content: center;
+    background: radial-gradient(circle at 35% 30%, var(--navy-light), var(--navy) 75%);
+    border: 1px solid rgba(0,212,255,0.3);
+  }
+  .team-photo::after {
+    content: '';
+    position: absolute; inset: -6px;
+    border-radius: 50%;
+    border: 1px solid rgba(0,212,255,0.12);
+  }
+  .team-photo img {
+    width: 100%; height: 100%; border-radius: 50%;
+    object-fit: cover;
+    filter: grayscale(15%) contrast(1.05);
+  }
+  .team-initials {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.8rem; font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 0.05em;
+  }
+  .team-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--white); }
+  .team-role {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: 1rem;
+  }
+  .team-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.1rem; }
+  .team-links { display: flex; gap: 0.9rem; justify-content: center; }
+  .team-links a {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(0,212,255,0.25);
+    color: var(--text-muted);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .team-links a:hover { color: var(--cyan); border-color: var(--cyan); }
+
+  /* FOOTER */
+  footer {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(0,212,255,0.08);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.4rem;
+    color: var(--cyan); letter-spacing: 0.1em; margin-bottom: 1rem;
+  }
+  .footer-tagline { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2rem; }
+  .footer-links { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+  .footer-links a { font-size: 0.8rem; color: var(--slate-light); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--cyan); }
+  .footer-copy { font-size: 0.75rem; color: var(--slate); }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .specs-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+    .gallery-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+    .gallery-item:first-child { grid-row: auto; grid-column: 1 / 3; height: 180px; }
+    .gallery-item { height: 130px; }
+    .team-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">VACUBOT<span style="color:var(--white);font-weight:400"> PRO</span></div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#specs">Specs</a></li>
+    <li><a href="#how-it-works">How it works</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#team">Team</a></li>
+  </ul>
+  <a href="#specs" class="btn-primary" style="font-size:0.75rem;padding:0.6rem 1.4rem">View Specs</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-particles">
+    <div class="hero-particle" style="left:8%; animation-duration:7s; animation-delay:0.2s; --drift:15px;"></div>
+    <div class="hero-particle" style="left:18%; animation-duration:9s; animation-delay:1.6s; --drift:-25px;"></div>
+    <div class="hero-particle" style="left:28%; animation-duration:6.5s; animation-delay:0.9s; --drift:10px;"></div>
+    <div class="hero-particle" style="left:38%; animation-duration:8s; animation-delay:2.4s; --drift:-15px;"></div>
+    <div class="hero-particle" style="left:50%; animation-duration:7.5s; animation-delay:0.4s; --drift:20px;"></div>
+    <div class="hero-particle" style="left:62%; animation-duration:9.5s; animation-delay:1.2s; --drift:-10px;"></div>
+    <div class="hero-particle" style="left:72%; animation-duration:6.8s; animation-delay:2s; --drift:25px;"></div>
+    <div class="hero-particle" style="left:82%; animation-duration:8.4s; animation-delay:0.6s; --drift:-20px;"></div>
+    <div class="hero-particle" style="left:92%; animation-duration:7.2s; animation-delay:1.8s; --drift:15px;"></div>
+    <div class="hero-particle" style="left:45%; animation-duration:10s; animation-delay:3s; --drift:-30px;"></div>
+  </div>
+
+  <div class="hero-eyebrow">Next-Generation Cleaning</div>
+  <h1>VACU<span class="accent">BOT</span><br>PRO X1</h1>
+  <div class="hero-sub">Autonomous Intelligence</div>
+  <p class="hero-desc">A smart vacuum robot that maps, learns, and adapts to your home — so every surface gets cleaned with precision you didn't know was possible.</p>
+  <div class="hero-ctas">
+    <a href="#features" class="btn-primary">Explore Features</a>
+    <a href="#how-it-works" class="btn-outline">See How It Works</a>
+  </div>
+
+  <!-- Animated Robot -->
+  <div class="robot-wrap">
+    <div class="robot-pulse"></div>
+    <div class="robot-pulse"></div>
+    <div class="robot-pulse"></div>
+    <svg viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bodyGrad" cx="50%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#1E2840"/>
+          <stop offset="100%" stop-color="#0A0E1A"/>
+        </radialGradient>
+        <radialGradient id="topGrad" cx="50%" cy="30%" r="65%">
+          <stop offset="0%" stop-color="#1E3050"/>
+          <stop offset="100%" stop-color="#0D1525"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Shadow -->
+      <ellipse cx="140" cy="258" rx="80" ry="10" fill="rgba(0,212,255,0.07)"/>
+
+      <!-- Body — main disc -->
+      <circle cx="140" cy="148" r="100" fill="url(#bodyGrad)" stroke="rgba(0,212,255,0.25)" stroke-width="1.5"/>
+
+      <!-- Top dome -->
+      <ellipse cx="140" cy="120" rx="75" ry="45" fill="url(#topGrad)" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+
+      <!-- Spinning brush ring -->
+      <g style="transform-origin:140px 148px; animation: spin 4s linear infinite;">
+        <circle cx="140" cy="148" r="90" fill="none" stroke="rgba(0,212,255,0.08)" stroke-width="1" stroke-dasharray="12 8"/>
+      </g>
+
+      <!-- Sensor ring -->
+      <circle cx="140" cy="148" r="70" fill="none" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+
+      <!-- LiDAR tower -->
+      <rect x="128" y="88" width="24" height="16" rx="4" fill="#1E2840" stroke="rgba(0,212,255,0.4)" stroke-width="1"/>
+      <!-- LiDAR scan line -->
+      <line x1="140" y1="96" x2="140" y2="70" stroke="var(--cyan)" stroke-width="1.5" opacity="0.5" style="transform-origin:140px 96px; animation: spin 1.5s linear infinite;"/>
+      <circle cx="140" cy="96" r="3" fill="var(--cyan)" opacity="0.8"/>
+
+      <!-- Eyes / sensors -->
+      <circle cx="116" cy="118" r="7" fill="#0A0E1A" stroke="rgba(0,212,255,0.5)" stroke-width="1.5"/>
+      <circle cx="116" cy="118" r="3.5" fill="var(--cyan)" opacity="0.9"/>
+      <circle cx="164" cy="118" r="7" fill="#0A0E1A" stroke="rgba(0,212,255,0.5)" stroke-width="1.5"/>
+      <circle cx="164" cy="118" r="3.5" fill="var(--cyan)" opacity="0.9"/>
+
+      <!-- Status indicator -->
+      <rect x="126" y="133" width="28" height="6" rx="3" fill="#0A0E1A" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+      <rect x="128" y="134.5" width="12" height="3" rx="1.5" fill="var(--cyan)" opacity="0.8"/>
+
+      <!-- Side brushes -->
+      <g style="transform-origin:78px 178px; animation: brush 1.2s ease-in-out infinite;">
+        <rect x="58" y="172" width="40" height="6" rx="3" fill="rgba(0,212,255,0.3)" transform="rotate(-30 78 178)"/>
+        <rect x="58" y="172" width="40" height="6" rx="3" fill="rgba(0,212,255,0.2)" transform="rotate(0 78 178)"/>
+        <rect x="58" y="172" width="40" height="6" rx="3" fill="rgba(0,212,255,0.1)" transform="rotate(30 78 178)"/>
+      </g>
+      <g style="transform-origin:202px 178px; animation: brush 1.2s ease-in-out infinite reverse;">
+        <rect x="182" y="172" width="40" height="6" rx="3" fill="rgba(0,212,255,0.3)" transform="rotate(30 202 178)"/>
+        <rect x="182" y="172" width="40" height="6" rx="3" fill="rgba(0,212,255,0.2)" transform="rotate(0 202 178)"/>
+        <rect x="182" y="172" width="40" height="6" rx="3" fill="rgba(0,212,255,0.1)" transform="rotate(-30 202 178)"/>
+      </g>
+
+      <!-- Wheel bumps -->
+      <ellipse cx="70" cy="185" rx="16" ry="8" fill="#131929" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+      <ellipse cx="210" cy="185" rx="16" ry="8" fill="#131929" stroke="rgba(0,212,255,0.15)" stroke-width="1"/>
+
+      <!-- Dust intake -->
+      <ellipse cx="140" cy="200" rx="30" ry="10" fill="#0A0E1A" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+      <ellipse cx="140" cy="200" rx="18" ry="6" fill="#1E2840"/>
+
+      <!-- Brand text -->
+      <text x="140" y="165" text-anchor="middle" font-family="'Orbitron', monospace" font-size="9" font-weight="700" fill="rgba(0,212,255,0.5)" letter-spacing="3">VACUBOT</text>
+    </svg>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="container">
+    <div class="section-label">Core Capabilities</div>
+    <h2 class="section-title">Built for intelligent<br>autonomous cleaning</h2>
+    <p class="section-desc">Every system was engineered around one idea — a robot that understands your space, not just sweeps through it.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-num">01</div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M2 12h3M19 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12"/></svg>
+        </div>
+        <h3>LiDAR 360° Mapping</h3>
+        <p>Real-time spatial awareness with 12m range detection builds a precise floor plan of your home in under 3 minutes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">02</div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9.5 2A2.5 2.5 0 0112 4.5v15a2.5 2.5 0 01-4.96-.46L5.5 7c-.33-1.5 1.33-2.5 2.5-2.5z"/><path d="M14.5 2A2.5 2.5 0 0112 4.5"/><path d="M18.5 7L17 19.04A2.5 2.5 0 0112 19.5"/></svg>
+        </div>
+        <h3>Adaptive Suction</h3>
+        <p>3-stage suction system automatically adjusts from 800Pa to 2700Pa based on carpet vs. hardwood detection.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">03</div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <h3>AI Room Recognition</h3>
+        <p>On-device machine learning identifies room types and applies customized cleaning patterns without cloud processing.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">04</div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2a10 10 0 110 20 10 10 0 010-20z"/><path d="M12 6v6l4 2"/></svg>
+        </div>
+        <h3>Smart Scheduling</h3>
+        <p>Learns your routine and proactively schedules cleanings when you're away — synced with your calendar and home sensors.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">05</div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        </div>
+        <h3>Auto-Return & Charge</h3>
+        <p>Returns to base when battery drops to 15%, recharges, and resumes the exact path from where it left off.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-num">06</div>
+        <div class="feature-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Anti-Drop Cliff Sensors</h3>
+        <p>Six infrared cliff sensors prevent falls from stairs, elevated platforms, and sudden floor changes with 99.8% accuracy.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPECS -->
+<section id="specs" class="specs">
+  <div class="container">
+    <div class="specs-inner">
+      <div>
+        <div class="section-label">Technical Specifications</div>
+        <h2 class="section-title">Precision-engineered<br>hardware</h2>
+        <div class="specs-table">
+          <div class="spec-row"><span class="spec-key">Suction Power</span><span class="spec-val">2700 Pa</span></div>
+          <div class="spec-row"><span class="spec-key">Battery Life</span><span class="spec-val">180 min</span></div>
+          <div class="spec-row"><span class="spec-key">Noise Level</span><span class="spec-val">58 dB</span></div>
+          <div class="spec-row"><span class="spec-key">Dustbin Capacity</span><span class="spec-val">450 mL</span></div>
+          <div class="spec-row"><span class="spec-key">LiDAR Range</span><span class="spec-val">12 m</span></div>
+          <div class="spec-row"><span class="spec-key">Navigation</span><span class="spec-val">SLAM AI</span></div>
+          <div class="spec-row"><span class="spec-key">Obstacle Clearance</span><span class="spec-val">20 mm</span></div>
+          <div class="spec-row"><span class="spec-key">Connectivity</span><span class="spec-val">Wi-Fi + BT</span></div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">180<span style="font-size:1.2rem">min</span></div>
+          <div class="stat-label">Battery Life</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">300<span style="font-size:1.2rem">m²</span></div>
+          <div class="stat-label">Coverage Area</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">2700<span style="font-size:1rem">Pa</span></div>
+          <div class="stat-label">Max Suction</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number" style="color:var(--gold)">99.8<span style="font-size:1.2rem">%</span></div>
+          <div class="stat-label">Fall Prevention</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how-it-works">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">From scan to spotless,<br>fully automated</h2>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="step-dot">01</div>
+        <h4>Map the Space</h4>
+        <p>LiDAR scans the room in 3 minutes, building a live floor plan with obstacle awareness.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-dot">02</div>
+        <h4>Plan the Route</h4>
+        <p>AI calculates the most efficient path, prioritizing high-traffic zones and tight corners.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-dot">03</div>
+        <h4>Clean Precisely</h4>
+        <p>Adaptive suction and dual side brushes tackle every surface type without adjustment.</p>
+      </div>
+      <div class="process-step">
+        <div class="step-dot">04</div>
+        <h4>Return & Report</h4>
+        <p>Docks automatically, then sends a cleaning summary and updated map to your phone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" style="padding-bottom:6rem;">
+  <div class="container">
+    <div class="section-label">Design Gallery</div>
+    <h2 class="section-title">Engineered to last,<br>designed to impress</h2>
+    <div class="gallery-grid">
+      <div class="gallery-item" style="background:var(--navy-light);">
+        <svg viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="150" r="80" fill="#131929" stroke="rgba(0,212,255,0.3)" stroke-width="1.5"/>
+          <circle cx="100" cy="150" r="60" fill="none" stroke="rgba(0,212,255,0.12)" stroke-width="1"/>
+          <circle cx="100" cy="120" r="8" fill="#00D4FF" opacity="0.9"/>
+          <circle cx="78" cy="128" r="6" fill="#00A8CC" opacity="0.7"/>
+          <circle cx="122" cy="128" r="6" fill="#00A8CC" opacity="0.7"/>
+          <rect x="88" y="108" width="24" height="12" rx="3" fill="#1E2840" stroke="rgba(0,212,255,0.4)" stroke-width="1"/>
+          <text x="100" y="168" text-anchor="middle" font-family="monospace" font-size="8" fill="rgba(0,212,255,0.4)">VACUBOT PRO</text>
+        </svg>
+        <div class="gallery-label">Top view</div>
+      </div>
+      <div class="gallery-item">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="60" cy="70" rx="50" ry="30" fill="#131929" stroke="rgba(0,212,255,0.2)" stroke-width="1"/>
+          <rect x="35" y="40" width="50" height="35" rx="8" fill="#1E2840" stroke="rgba(0,212,255,0.25)" stroke-width="1"/>
+          <circle cx="60" cy="36" r="8" fill="#131929" stroke="rgba(0,212,255,0.3)" stroke-width="1"/>
+          <circle cx="60" cy="36" r="3" fill="#00D4FF" opacity="0.8"/>
+        </svg>
+        <div class="gallery-label">Side profile</div>
+      </div>
+      <div class="gallery-item">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="20" width="80" height="80" rx="4" fill="none" stroke="rgba(0,212,255,0.15)" stroke-width="0.5"/>
+          <path d="M 60 20 L 60 100 M 20 60 L 100 60" stroke="rgba(0,212,255,0.1)" stroke-width="0.5"/>
+          <circle cx="60" cy="60" r="25" fill="none" stroke="rgba(0,212,255,0.3)" stroke-width="1" stroke-dasharray="4 3"/>
+          <circle cx="60" cy="60" r="6" fill="none" stroke="var(--cyan)" stroke-width="1.5"/>
+          <circle cx="60" cy="60" r="2" fill="var(--cyan)"/>
+          <path d="M60 35 L65 45 L60 43 L55 45 Z" fill="rgba(0,212,255,0.5)"/>
+        </svg>
+        <div class="gallery-label">LiDAR scan</div>
+      </div>
+      <div class="gallery-item">
+        <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+          <rect x="15" y="15" width="90" height="90" rx="2" fill="none" stroke="rgba(0,212,255,0.1)" stroke-width="0.5"/>
+          <path d="M 25 90 Q 30 50 50 45 Q 70 40 75 70 Q 80 100 95 30" stroke="var(--cyan)" stroke-width="1.5" fill="none" opacity="0.6"/>
+          <circle cx="25" cy="90" r="3" fill="var(--cyan)" opacity="0.8"/>
+          <circle cx="95" cy="30" r="3" fill="#FFB800" opacity="0.9"/>
+          <text x="60" y="108" text-anchor="middle" font-family="monospace" font-size="7" fill="rgba(0,212,255,0.3)">CLEAN PATH</text>
+        </svg>
+        <div class="gallery-label">Route planning</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team">
+  <div class="container">
+    <div class="section-label">The Team</div>
+    <h2 class="section-title">Engineers behind<br>the intelligence</h2>
+    <p class="section-desc">A small cross-disciplinary team focused on robotics, embedded AI, and industrial design.</p>
+
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-photo">
+          <!-- Replace with a real photo: <img src="team/alex.jpg" alt="Alex Rivera"> -->
+          <span class="team-initials">AR</span>
+        </div>
+        <h3>Alex Rivera</h3>
+        <div class="team-role">Founder &amp; CEO</div>
+        <p>Sets the company vision and leads strategy, partnerships, and overall direction.</p>
+        <div class="team-links">
+          <a href="#" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.24 8.25h4.5V23h-4.5V8.25zM8.5 8.25h4.32v2.01h.06c.6-1.13 2.07-2.32 4.26-2.32 4.56 0 5.4 3 5.4 6.9V23h-4.5v-6.86c0-1.64-.03-3.75-2.29-3.75-2.29 0-2.64 1.79-2.64 3.63V23H8.5V8.25z"/></svg></a>
+          <a href="#" aria-label="GitHub"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 015.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.52 10.52 0 0023.5 12c0-6.35-5.15-11.5-11.5-11.5z"/></svg></a>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-photo">
+          <span class="team-initials">MK</span>
+        </div>
+        <h3>Maya Kwon</h3>
+        <div class="team-role">Head of Product</div>
+        <p>Shapes the product roadmap and works closely with users to prioritize what matters most.</p>
+        <div class="team-links">
+          <a href="#" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.24 8.25h4.5V23h-4.5V8.25zM8.5 8.25h4.32v2.01h.06c.6-1.13 2.07-2.32 4.26-2.32 4.56 0 5.4 3 5.4 6.9V23h-4.5v-6.86c0-1.64-.03-3.75-2.29-3.75-2.29 0-2.64 1.79-2.64 3.63V23H8.5V8.25z"/></svg></a>
+          <a href="#" aria-label="GitHub"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 015.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.52 10.52 0 0023.5 12c0-6.35-5.15-11.5-11.5-11.5z"/></svg></a>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-photo">
+          <span class="team-initials">JT</span>
+        </div>
+        <h3>Jordan Tate</h3>
+        <div class="team-role">Marketing Lead</div>
+        <p>Drives brand, campaigns, and storytelling to bring VacuBot Pro to new homes.</p>
+        <div class="team-links">
+          <a href="#" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.24 8.25h4.5V23h-4.5V8.25zM8.5 8.25h4.32v2.01h.06c.6-1.13 2.07-2.32 4.26-2.32 4.56 0 5.4 3 5.4 6.9V23h-4.5v-6.86c0-1.64-.03-3.75-2.29-3.75-2.29 0-2.64 1.79-2.64 3.63V23H8.5V8.25z"/></svg></a>
+          <a href="#" aria-label="GitHub"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 015.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.52 10.52 0 0023.5 12c0-6.35-5.15-11.5-11.5-11.5z"/></svg></a>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="team-photo">
+          <span class="team-initials">PS</span>
+        </div>
+        <h3>Priya Shah</h3>
+        <div class="team-role">Customer Success Lead</div>
+        <p>Makes sure every customer has a smooth experience, from setup to support.</p>
+        <div class="team-links">
+          <a href="#" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5C4.98 4.88 3.87 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.24 8.25h4.5V23h-4.5V8.25zM8.5 8.25h4.32v2.01h.06c.6-1.13 2.07-2.32 4.26-2.32 4.56 0 5.4 3 5.4 6.9V23h-4.5v-6.86c0-1.64-.03-3.75-2.29-3.75-2.29 0-2.64 1.79-2.64 3.63V23H8.5V8.25z"/></svg></a>
+          <a href="#" aria-label="GitHub"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.4 7.86 10.93.57.1.78-.25.78-.55v-2.16c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.2 1.77 1.2 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11.1 11.1 0 015.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.81 1.19 1.84 1.19 3.1 0 4.43-2.7 5.4-5.27 5.69.42.36.78 1.08.78 2.18v3.23c0 .3.21.66.79.55A10.52 10.52 0 0023.5 12c0-6.35-5.15-11.5-11.5-11.5z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">VACUBOT PRO</div>
+  <p class="footer-tagline">Autonomous intelligence for a cleaner home.</p>
+  <div class="footer-links">
+    <a href="#features">Features</a>
+    <a href="#specs">Specifications</a>
+    <a href="#how-it-works">How it works</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#team">Team</a>
+    <a href="#">GitHub</a>
+    <a href="#">Contact</a>
+  </div>
+  <p class="footer-copy">© 2026 VacuBot Pro — Smart Vacuum Robot Portfolio Project</p>
+</footer>
+
+</body>
+</html>
