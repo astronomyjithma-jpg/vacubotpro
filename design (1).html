@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design — VacuBot Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0A0E1A;
+    --navy-mid: #131929;
+    --navy-light: #1E2840;
+    --cyan: #00D4FF;
+    --cyan-dim: #00A8CC;
+    --gold: #FFB800;
+    --white: #F0F4FF;
+    --slate: #3D4A6B;
+    --slate-light: #6B7FA8;
+    --text-muted: #8A9BC0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.25rem 3rem;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,212,255,0.1);
+  }
+  .nav-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500; letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+  .nav-links a.active { color: var(--cyan); }
+  .btn-primary {
+    background: var(--cyan); color: var(--navy);
+    font-family: 'Inter', sans-serif; font-weight: 700;
+    font-size: 0.875rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.875rem 2.25rem; border: none; cursor: pointer;
+    text-decoration: none; display: inline-block;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: #33DDFF; transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: var(--cyan);
+    font-family: 'Inter', sans-serif; font-weight: 600;
+    font-size: 0.875rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.875rem 2.25rem;
+    border: 1px solid rgba(0,212,255,0.4);
+    cursor: pointer; text-decoration: none; display: inline-block;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  }
+  .btn-outline:hover {
+    border-color: var(--cyan); background: rgba(0,212,255,0.08); transform: translateY(-2px);
+  }
+
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes gridDrift {
+    0% { background-position: 0 0; }
+    100% { background-position: 60px 60px; }
+  }
+  @keyframes eyebrowLine {
+    0% { width: 0; opacity: 0; }
+    100% { width: 40px; opacity: 0.5; }
+  }
+  @keyframes dashFlow {
+    0% { stroke-dashoffset: 40; }
+    100% { stroke-dashoffset: 0; }
+  }
+  @keyframes labelBlink {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+
+  /* HERO */
+  .dhero {
+    min-height: 76vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding: 9rem 2rem 3rem;
+    position: relative; overflow: hidden;
+  }
+  .dhero-bg-grid {
+    position: absolute; inset: -60px;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridDrift 6s linear infinite;
+  }
+  .dhero-eyebrow {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .dhero-eyebrow::before, .dhero-eyebrow::after {
+    content: ''; display: block; height: 1px; background: var(--cyan);
+    width: 40px; opacity: 0.5;
+  }
+  .dhero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 4.4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    position: relative;
+    margin-bottom: 1.25rem;
+  }
+  .dhero h1 .accent { color: var(--cyan); }
+  .dhero-desc {
+    font-size: 1.05rem; color: var(--text-muted);
+    max-width: 560px; line-height: 1.7;
+    position: relative;
+  }
+
+  section { padding: 6rem 2rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--cyan); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 700; line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .section-desc { color: var(--text-muted); max-width: 560px; line-height: 1.7; }
+
+  /* BLUEPRINT / EXPLODED DIAGRAM */
+  .blueprint {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(0,212,255,0.08);
+    border-bottom: 1px solid rgba(0,212,255,0.08);
+  }
+  .blueprint-frame {
+    position: relative;
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.15);
+    padding: 2.5rem 1.5rem 1.5rem;
+    margin-top: 3rem;
+  }
+  .blueprint-frame::before {
+    content: 'FIG. 01 — EXPLODED ASSEMBLY';
+    position: absolute; top: 0.9rem; left: 1.5rem;
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem;
+    letter-spacing: 0.15em; color: rgba(0,212,255,0.5);
+  }
+  .blueprint-frame::after {
+    content: 'REV. X1 — SCALE N.T.S.';
+    position: absolute; top: 0.9rem; right: 1.5rem;
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem;
+    letter-spacing: 0.1em; color: rgba(0,212,255,0.3);
+  }
+  .blueprint-frame svg { width: 100%; height: auto; display: block; }
+  .bp-label { animation: labelBlink 3s ease-in-out infinite; }
+  .bp-label:nth-child(2n) { animation-delay: 0.6s; }
+  .bp-label:nth-child(3n) { animation-delay: 1.2s; }
+  .bp-dash { stroke-dasharray: 4 3; animation: dashFlow 2.5s linear infinite; }
+
+  /* PHILOSOPHY */
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    margin-top: 4rem;
+    background: var(--slate);
+  }
+  .philosophy-card {
+    background: var(--navy-mid);
+    padding: 2.5rem 2rem;
+    position: relative; overflow: hidden;
+    transition: background 0.25s;
+  }
+  .philosophy-card:hover { background: var(--navy-light); }
+  .philosophy-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--cyan);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .philosophy-card:hover::before { transform: scaleX(1); }
+  .philosophy-mark {
+    font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;
+    color: var(--cyan); letter-spacing: 0.1em; margin-bottom: 1.25rem; display: block;
+  }
+  .philosophy-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--white); }
+  .philosophy-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+
+  /* MATERIALS */
+  .materials { background: var(--navy-mid); }
+  .materials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.25rem;
+    margin-top: 3.5rem;
+  }
+  .material-card {
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.1);
+    padding: 1.75rem;
+  }
+  .material-swatch {
+    width: 100%; height: 70px; margin-bottom: 1.25rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+  .material-swatch::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 60%);
+  }
+  .material-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--white); }
+  .material-code {
+    font-family: 'Orbitron', sans-serif; font-size: 0.7rem; color: var(--cyan);
+    letter-spacing: 0.06em; margin-bottom: 0.75rem; display: block;
+  }
+  .material-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* COLORWAYS */
+  .colorway-strip {
+    display: flex; gap: 1.25rem; margin-top: 3.5rem; flex-wrap: wrap;
+  }
+  .colorway {
+    flex: 1; min-width: 200px;
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.1);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .colorway:hover { border-color: rgba(0,212,255,0.35); transform: translateY(-4px); }
+  .colorway-block { height: 110px; position: relative; }
+  .colorway-info { padding: 1.25rem 1.5rem 1.5rem; }
+  .colorway-info h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .colorway-info span { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.04em; }
+
+  /* DIMENSIONS */
+  .dims { background: var(--navy-mid); }
+  .dims-inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 3rem;
+  }
+  .dims-table .spec-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .dims-table .spec-row:last-child { border-bottom: none; }
+  .dims-key { font-size: 0.85rem; color: var(--text-muted); }
+  .dims-val { font-size: 0.9rem; color: var(--white); font-weight: 600; font-family: 'Orbitron', sans-serif; letter-spacing: 0.04em; }
+
+  /* CONTRIBUTE / UPLOADS */
+  .contribute { background: var(--navy-mid); }
+  .upload-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3.5rem;
+  }
+  .upload-card {
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.12);
+    padding: 1.75rem;
+    display: flex; flex-direction: column;
+  }
+  .upload-card h4 {
+    font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--white);
+  }
+  .upload-card > p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.25rem; }
+  .upload-dropzone {
+    border: 1px dashed rgba(0,212,255,0.35);
+    background: rgba(0,212,255,0.03);
+    padding: 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    margin-bottom: 1.25rem;
+  }
+  .upload-dropzone:hover { border-color: var(--cyan); background: rgba(0,212,255,0.07); }
+  .upload-dropzone input { display: none; }
+  .upload-dropzone-label {
+    font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--cyan); font-weight: 600;
+  }
+  .upload-dropzone-hint { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.4rem; }
+  .upload-preview-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 0.6rem; margin-top: auto;
+  }
+  .upload-preview-grid img, .upload-preview-grid video {
+    width: 100%; height: 80px; object-fit: cover;
+    border: 1px solid rgba(0,212,255,0.2);
+  }
+  .upload-video-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: auto; }
+  .upload-video-list video { width: 100%; border: 1px solid rgba(0,212,255,0.2); }
+  .code-textarea {
+    width: 100%; min-height: 110px; resize: vertical;
+    background: var(--navy); color: var(--white);
+    border: 1px solid rgba(0,212,255,0.2);
+    font-family: 'Courier New', monospace; font-size: 0.8rem;
+    padding: 0.75rem; margin-bottom: 0.75rem;
+  }
+  .code-add-btn {
+    align-self: flex-start;
+    background: transparent; color: var(--cyan);
+    border: 1px solid rgba(0,212,255,0.4);
+    font-family: 'Inter', sans-serif; font-weight: 600;
+    font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.6rem 1.2rem; cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    margin-bottom: 1rem;
+  }
+  .code-add-btn:hover { border-color: var(--cyan); background: rgba(0,212,255,0.08); }
+  .code-snippet-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: auto; }
+  .code-snippet-list pre {
+    background: var(--navy); border: 1px solid rgba(0,212,255,0.15);
+    padding: 0.75rem; font-family: 'Courier New', monospace; font-size: 0.75rem;
+    color: var(--text-muted); overflow-x: auto; white-space: pre-wrap; word-break: break-word;
+  }
+  .empty-hint { font-size: 0.75rem; color: var(--slate-light); font-style: italic; }
+
+  /* FOOTER */
+  footer {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(0,212,255,0.08);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.4rem;
+    color: var(--cyan); letter-spacing: 0.1em; margin-bottom: 1rem;
+  }
+  .footer-tagline { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2rem; }
+  .footer-links { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+  .footer-links a { font-size: 0.8rem; color: var(--slate-light); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--cyan); }
+  .footer-copy { font-size: 0.75rem; color: var(--slate); }
+
+  @media (max-width: 900px) {
+    .philosophy-grid { grid-template-columns: 1fr; }
+    .dims-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">VACUBOT<span style="color:var(--white);font-weight:400"> PRO</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="index.html#specs">Specs</a></li>
+    <li><a href="index.html#how-it-works">How it works</a></li>
+    <li><a href="index.html#gallery">Gallery</a></li>
+    <li><a href="design.html" class="active">Design</a></li>
+    <li><a href="#control-modes">Control Modes</a></li>
+    <li><a href="#contribute">Contribute</a></li>
+    <li><a href="index.html#team">Team</a></li>
+  </ul>
+  <a href="index.html#specs" class="btn-primary" style="font-size:0.75rem;padding:0.6rem 1.4rem">View Specs</a>
+</nav>
+
+<!-- HERO -->
+<section class="dhero">
+  <div class="dhero-bg-grid"></div>
+  <div class="dhero-eyebrow">HOW IT WORKS</div>
+  <h1>Three ways to<br><span class="accent">clean</span>, one robot.</h1>
+  <p class="dhero-desc">VacuBot Pro X1 switches between object avoidance, line follow, and manual WiFi control — while it vacuums dust and logs room temperature and humidity as it goes.</p>
+</section>
+
+<!-- CONTROL MODES -->
+<section id="control-modes">
+  <div class="container">
+    <div class="section-label">Control Modes</div>
+    <h2 class="section-title">Three ways to<br>drive the robot</h2>
+    <p class="section-desc">Switch modes depending on the room, the floor plan, or whether you just want to take the wheel yourself.</p>
+
+    <div class="philosophy-grid">
+      <div class="philosophy-card">
+        <span class="philosophy-mark">MODE / 01</span>
+        <h3>Object Avoidance</h3>
+        <p>Infrared and bump sensors detect furniture, walls, and obstacles in real time, steering the robot around them without getting stuck.</p>
+      </div>
+      <div class="philosophy-card">
+        <span class="philosophy-mark">MODE / 02</span>
+        <h3>Line Follow</h3>
+        <p>An IR line sensor tracks a marked path on the floor, letting the robot follow a fixed route through a room or between rooms.</p>
+      </div>
+      <div class="philosophy-card">
+        <span class="philosophy-mark">MODE / 03</span>
+        <h3>WiFi Control (Manual)</h3>
+        <p>Drive the robot yourself from a phone or browser over WiFi — forward, back, left, right — for spot cleaning exactly where you want it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SENSING & CLEANING -->
+<section class="materials" id="sensing">
+  <div class="container">
+    <div class="section-label">Sensing &amp; Cleaning</div>
+    <h2 class="section-title">What it does<br>while it drives</h2>
+    <p class="section-desc">Cleaning and environment sensing run continuously, whichever control mode is active.</p>
+
+    <div class="stats-grid" style="margin-top:3.5rem;">
+      <div class="stat-card">
+        <div class="stat-number">🧹</div>
+        <div class="stat-label">Dust Suction</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">🌡️</div>
+        <div class="stat-label">Temperature Reading</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">💧</div>
+        <div class="stat-label">Humidity Reading</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">📶</div>
+        <div class="stat-label">WiFi Telemetry</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRIBUTE -->
+<section class="contribute" id="contribute">
+  <div class="container">
+    <div class="section-label">Contribute</div>
+    <h2 class="section-title">Add your own<br>photos, footage &amp; code</h2>
+    <p class="section-desc">Drop in build photos, teardown videos, or firmware/config snippets. Everything here previews locally in your browser — nothing is uploaded to a server.</p>
+
+    <div class="upload-grid">
+      <!-- PHOTO UPLOAD -->
+      <div class="upload-card">
+        <h4>Photos</h4>
+        <p>Unit shots, teardown stills, colorway samples.</p>
+        <label class="upload-dropzone" for="photoInput">
+          <div class="upload-dropzone-label">Click to add photos</div>
+          <div class="upload-dropzone-hint">JPG, PNG, WEBP</div>
+          <input type="file" id="photoInput" accept="image/*" multiple>
+        </label>
+        <div class="upload-preview-grid" id="photoPreview">
+          <span class="empty-hint">No photos added yet</span>
+        </div>
+      </div>
+
+      <!-- VIDEO UPLOAD -->
+      <div class="upload-card">
+        <h4>Videos</h4>
+        <p>Assembly walk-throughs, LiDAR mapping demos.</p>
+        <label class="upload-dropzone" for="videoInput">
+          <div class="upload-dropzone-label">Click to add a video</div>
+          <div class="upload-dropzone-hint">MP4, WEBM, MOV</div>
+          <input type="file" id="videoInput" accept="video/*" multiple>
+        </label>
+        <div class="upload-video-list" id="videoPreview">
+          <span class="empty-hint">No videos added yet</span>
+        </div>
+      </div>
+
+      <!-- CODE UPLOAD -->
+      <div class="upload-card">
+        <h4>Code</h4>
+        <p>Firmware, config, or a snippet worth sharing.</p>
+        <label class="upload-dropzone" for="codeFileInput">
+          <div class="upload-dropzone-label">Click to upload a code file</div>
+          <div class="upload-dropzone-hint">.js .py .json .yaml .txt etc.</div>
+          <input type="file" id="codeFileInput" accept=".js,.py,.json,.yaml,.yml,.txt,.c,.cpp,.h,.ino,.md">
+        </label>
+        <textarea class="code-textarea" id="codeTextarea" placeholder="...or paste a snippet here"></textarea>
+        <button class="code-add-btn" id="codeAddBtn" type="button">Add Snippet</button>
+        <div class="code-snippet-list" id="codePreview">
+          <span class="empty-hint">No code added yet</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // PHOTOS
+  const photoInput = document.getElementById('photoInput');
+  const photoPreview = document.getElementById('photoPreview');
+  photoInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    const emptyHint = photoPreview.querySelector('.empty-hint');
+    if (emptyHint) emptyHint.remove();
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = document.createElement('img');
+        img.src = ev.target.result;
+        img.alt = file.name;
+        photoPreview.appendChild(img);
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  // VIDEOS
+  const videoInput = document.getElementById('videoInput');
+  const videoPreview = document.getElementById('videoPreview');
+  videoInput.addEventListener('change', (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+    const emptyHint = videoPreview.querySelector('.empty-hint');
+    if (emptyHint) emptyHint.remove();
+    files.forEach(file => {
+      const url = URL.createObjectURL(file);
+      const video = document.createElement('video');
+      video.src = url;
+      video.controls = true;
+      videoPreview.appendChild(video);
+    });
+  });
+
+  // CODE
+  const codeFileInput = document.getElementById('codeFileInput');
+  const codeTextarea = document.getElementById('codeTextarea');
+  const codeAddBtn = document.getElementById('codeAddBtn');
+  const codePreview = document.getElementById('codePreview');
+
+  function addCodeSnippet(text, label) {
+    if (!text || !text.trim()) return;
+    const emptyHint = codePreview.querySelector('.empty-hint');
+    if (emptyHint) emptyHint.remove();
+    const wrapper = document.createElement('div');
+    const pre = document.createElement('pre');
+    pre.textContent = (label ? '// ' + label + '\n' : '') + text;
+    wrapper.appendChild(pre);
+    codePreview.appendChild(wrapper);
+  }
+
+  codeFileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => addCodeSnippet(ev.target.result, file.name);
+    reader.readAsText(file);
+  });
+
+  codeAddBtn.addEventListener('click', () => {
+    addCodeSnippet(codeTextarea.value, 'pasted snippet');
+    codeTextarea.value = '';
+  });
+</script>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">VACUBOT PRO</div>
+  <p class="footer-tagline">Autonomous intelligence for a cleaner home.</p>
+  <div class="footer-links">
+    <a href="index.html#features">Features</a>
+    <a href="index.html#specs">Specifications</a>
+    <a href="index.html#how-it-works">How it works</a>
+    <a href="index.html#gallery">Gallery</a>
+    <a href="design.html">Design</a>
+    <a href="index.html#team">Team</a>
+    <a href="#">GitHub</a>
+    <a href="#">Contact</a>
+  </div>
+  <p class="footer-copy">© 2026 VacuBot Pro — Smart Vacuum Robot Portfolio Project</p>
+</footer>
+
+</body>
+</html>
