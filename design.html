@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design — VacuBot Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #0A0E1A;
+    --navy-mid: #131929;
+    --navy-light: #1E2840;
+    --cyan: #00D4FF;
+    --cyan-dim: #00A8CC;
+    --gold: #FFB800;
+    --white: #F0F4FF;
+    --slate: #3D4A6B;
+    --slate-light: #6B7FA8;
+    --text-muted: #8A9BC0;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.25rem 3rem;
+    background: rgba(10,14,26,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,212,255,0.1);
+  }
+  .nav-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    color: var(--text-muted); text-decoration: none;
+    font-size: 0.85rem; font-weight: 500; letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--cyan); }
+  .nav-links a.active { color: var(--cyan); }
+  .btn-primary {
+    background: var(--cyan); color: var(--navy);
+    font-family: 'Inter', sans-serif; font-weight: 700;
+    font-size: 0.875rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.875rem 2.25rem; border: none; cursor: pointer;
+    text-decoration: none; display: inline-block;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: #33DDFF; transform: translateY(-2px); }
+  .btn-outline {
+    background: transparent; color: var(--cyan);
+    font-family: 'Inter', sans-serif; font-weight: 600;
+    font-size: 0.875rem; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.875rem 2.25rem;
+    border: 1px solid rgba(0,212,255,0.4);
+    cursor: pointer; text-decoration: none; display: inline-block;
+    clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+  }
+  .btn-outline:hover {
+    border-color: var(--cyan); background: rgba(0,212,255,0.08); transform: translateY(-2px);
+  }
+
+  @keyframes fadeUp {
+    0% { opacity: 0; transform: translateY(24px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes gridDrift {
+    0% { background-position: 0 0; }
+    100% { background-position: 60px 60px; }
+  }
+  @keyframes eyebrowLine {
+    0% { width: 0; opacity: 0; }
+    100% { width: 40px; opacity: 0.5; }
+  }
+  @keyframes dashFlow {
+    0% { stroke-dashoffset: 40; }
+    100% { stroke-dashoffset: 0; }
+  }
+  @keyframes labelBlink {
+    0%, 100% { opacity: 0.35; }
+    50% { opacity: 1; }
+  }
+
+  /* HERO */
+  .dhero {
+    min-height: 76vh;
+    display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center;
+    padding: 9rem 2rem 3rem;
+    position: relative; overflow: hidden;
+  }
+  /* ============================================================
+     HERO BACKGROUND PHOTO
+     This ships with a generated placeholder pattern (no external
+     image dependency). To use YOUR OWN photo:
+       1. Put your image file next to this HTML file, e.g. "hero-bg.jpg"
+       2. Replace the background-image value below with:
+            background-image: url('hero-bg.jpg');
+     ============================================================ */
+  .dhero-bg-photo {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 22% 28%, rgba(0,212,255,0.16), transparent 42%),
+      radial-gradient(circle at 78% 68%, rgba(255,184,0,0.08), transparent 45%),
+      url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220"><g fill="none" stroke="%2300D4FF" stroke-width="1" opacity="0.35"><path d="M20 20h60v40h80v60h40"/><path d="M200 20h-40v50h-70v70h-60"/><circle cx="20" cy="20" r="4" fill="%2300D4FF" stroke="none"/><circle cx="80" cy="60" r="4" fill="%2300D4FF" stroke="none"/><circle cx="160" cy="120" r="4" fill="%2300D4FF" stroke="none"/><circle cx="200" cy="160" r="4" fill="%2300D4FF" stroke="none"/><circle cx="130" cy="160" r="4" fill="%2300D4FF" stroke="none"/></g></svg>'),
+      var(--navy);
+    background-size: cover, cover, 220px 220px, cover;
+    background-position: center;
+  }
+  .dhero-bg-fade {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(circle at 50% 35%, rgba(10,14,26,0.35), rgba(10,14,26,0.85) 65%),
+      linear-gradient(180deg, rgba(10,14,26,0.55) 0%, var(--navy) 92%);
+  }
+  .dhero-bg-grid {
+    position: absolute; inset: -60px;
+    background-image:
+      linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    animation: gridDrift 6s linear infinite;
+  }
+  .dhero-eyebrow {
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--cyan);
+    margin-bottom: 1.5rem;
+    position: relative;
+    display: flex; align-items: center; gap: 1rem;
+  }
+  .dhero-eyebrow::before, .dhero-eyebrow::after {
+    content: ''; display: block; height: 1px; background: var(--cyan);
+    width: 40px; opacity: 0.5;
+  }
+  .dhero h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(2.2rem, 6vw, 4.4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    position: relative;
+    margin-bottom: 1.25rem;
+  }
+  .dhero h1 .accent { color: var(--cyan); }
+  .dhero-desc {
+    font-size: 1.05rem; color: var(--text-muted);
+    max-width: 560px; line-height: 1.7;
+    position: relative;
+  }
+
+  section { padding: 6rem 2rem; }
+  .container { max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.25em;
+    text-transform: uppercase; color: var(--cyan); margin-bottom: 0.75rem;
+  }
+  .section-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(1.6rem, 4vw, 2.6rem);
+    font-weight: 700; line-height: 1.15;
+    margin-bottom: 1rem;
+  }
+  .section-desc { color: var(--text-muted); max-width: 560px; line-height: 1.7; }
+
+  /* BLUEPRINT / EXPLODED DIAGRAM */
+  .blueprint {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(0,212,255,0.08);
+    border-bottom: 1px solid rgba(0,212,255,0.08);
+  }
+  .blueprint-frame {
+    position: relative;
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.15);
+    padding: 2.5rem 1.5rem 1.5rem;
+    margin-top: 3rem;
+  }
+  .blueprint-frame::before {
+    content: 'FIG. 01 — EXPLODED ASSEMBLY';
+    position: absolute; top: 0.9rem; left: 1.5rem;
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem;
+    letter-spacing: 0.15em; color: rgba(0,212,255,0.5);
+  }
+  .blueprint-frame::after {
+    content: 'REV. X1 — SCALE N.T.S.';
+    position: absolute; top: 0.9rem; right: 1.5rem;
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem;
+    letter-spacing: 0.1em; color: rgba(0,212,255,0.3);
+  }
+  .blueprint-frame svg { width: 100%; height: auto; display: block; }
+  .bp-label { animation: labelBlink 3s ease-in-out infinite; }
+  .bp-label:nth-child(2n) { animation-delay: 0.6s; }
+  .bp-label:nth-child(3n) { animation-delay: 1.2s; }
+  .bp-dash { stroke-dasharray: 4 3; animation: dashFlow 2.5s linear infinite; }
+
+  /* PHILOSOPHY */
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5px;
+    margin-top: 4rem;
+    background: var(--slate);
+  }
+  .philosophy-card {
+    background: var(--navy-mid);
+    padding: 2.5rem 2rem;
+    position: relative; overflow: hidden;
+    transition: background 0.25s;
+  }
+  .philosophy-card:hover { background: var(--navy-light); }
+  .philosophy-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--cyan);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .philosophy-card:hover::before { transform: scaleX(1); }
+  .philosophy-mark {
+    font-family: 'Orbitron', sans-serif; font-size: 0.75rem; font-weight: 700;
+    color: var(--cyan); letter-spacing: 0.1em; margin-bottom: 1.25rem; display: block;
+  }
+  .philosophy-card h3 { font-size: 1.05rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--white); }
+  .philosophy-card p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; }
+
+  /* MATERIALS */
+  .materials { background: var(--navy-mid); }
+  .materials-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.25rem;
+    margin-top: 3.5rem;
+  }
+  .material-card {
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.1);
+    padding: 1.75rem;
+  }
+  .material-swatch {
+    width: 100%; height: 70px; margin-bottom: 1.25rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+  .material-swatch::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 60%);
+  }
+  .material-card h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--white); }
+  .material-code {
+    font-family: 'Orbitron', sans-serif; font-size: 0.7rem; color: var(--cyan);
+    letter-spacing: 0.06em; margin-bottom: 0.75rem; display: block;
+  }
+  .material-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* COLORWAYS */
+  .colorway-strip {
+    display: flex; gap: 1.25rem; margin-top: 3.5rem; flex-wrap: wrap;
+  }
+  .colorway {
+    flex: 1; min-width: 200px;
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.1);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .colorway:hover { border-color: rgba(0,212,255,0.35); transform: translateY(-4px); }
+  .colorway-block { height: 110px; position: relative; }
+  .colorway-info { padding: 1.25rem 1.5rem 1.5rem; }
+  .colorway-info h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.3rem; }
+  .colorway-info span { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.04em; }
+
+  /* DIMENSIONS */
+  .dims { background: var(--navy-mid); }
+  .dims-inner {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 3rem;
+  }
+  .dims-table .spec-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .dims-table .spec-row:last-child { border-bottom: none; }
+  .dims-key { font-size: 0.85rem; color: var(--text-muted); }
+  .dims-val { font-size: 0.9rem; color: var(--white); font-weight: 600; font-family: 'Orbitron', sans-serif; letter-spacing: 0.04em; }
+
+  /* CONTRIBUTE / SHOWCASE */
+  .contribute { background: var(--navy-mid); }
+  .showcase-tabs {
+    display: flex; gap: 0.5rem; margin-top: 3.5rem; margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(0,212,255,0.12);
+  }
+  .showcase-tab {
+    background: transparent; border: none; cursor: pointer;
+    color: var(--text-muted); font-family: 'Inter', sans-serif;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.85rem 1.5rem;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .showcase-tab:hover { color: var(--white); }
+  .showcase-tab.active { color: var(--cyan); border-color: var(--cyan); }
+  .showcase-panel { display: none; }
+  .showcase-panel.active { display: block; }
+
+  /* photos */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+  .photo-card {
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.12);
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .photo-card:hover { border-color: rgba(0,212,255,0.4); transform: translateY(-4px); }
+  .photo-thumb {
+    height: 160px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .photo-thumb::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), transparent 60%);
+  }
+  .photo-thumb svg { width: 42px; height: 42px; opacity: 0.55; position: relative; z-index: 1; }
+  .photo-info { padding: 1rem 1.25rem 1.25rem; }
+  .photo-info h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--white); }
+  .photo-info span { font-size: 0.72rem; color: var(--text-muted); letter-spacing: 0.04em; }
+
+  /* video */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .video-card {
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.12);
+    overflow: hidden;
+  }
+  .video-frame {
+    height: 180px; position: relative;
+    background: linear-gradient(135deg, rgba(0,212,255,0.1), rgba(0,168,204,0.03));
+    display: flex; align-items: center; justify-content: center;
+  }
+  .video-frame .play-btn {
+    width: 56px; height: 56px; border-radius: 50%;
+    border: 1px solid rgba(0,212,255,0.5);
+    background: rgba(10,14,26,0.6);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .video-frame .play-btn svg { width: 18px; height: 18px; fill: var(--cyan); margin-left: 3px; }
+  .video-frame .duration {
+    position: absolute; bottom: 0.6rem; right: 0.6rem;
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem;
+    background: rgba(10,14,26,0.75); color: var(--white);
+    padding: 0.2rem 0.5rem; letter-spacing: 0.05em;
+  }
+  .video-info { padding: 1rem 1.25rem 1.25rem; }
+  .video-info h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; color: var(--white); }
+  .video-info p { font-size: 0.78rem; color: var(--text-muted); line-height: 1.55; }
+
+  /* code */
+  .code-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+  .code-block {
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.12);
+  }
+  .code-block-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid rgba(0,212,255,0.1);
+  }
+  .code-block-header h4 { font-size: 0.85rem; font-weight: 600; color: var(--white); }
+  .code-block-header span {
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem;
+    color: var(--cyan); letter-spacing: 0.08em;
+  }
+  .code-block pre {
+    margin: 0; padding: 1.25rem;
+    font-family: 'Courier New', monospace; font-size: 0.8rem; line-height: 1.6;
+    color: var(--text-muted); overflow-x: auto; white-space: pre; word-break: break-word;
+  }
+  .code-block pre .tok-kw { color: var(--cyan); }
+  .code-block pre .tok-cm { color: var(--slate-light); font-style: italic; }
+  .code-block pre .tok-str { color: var(--gold); }
+
+  /* SENSING & CLEANING — animated sensor cards */
+  .sensor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5px;
+    margin-top: 3.5rem;
+    background: var(--slate);
+  }
+  .sensor-card {
+    background: var(--navy-mid);
+    padding: 2.5rem 1.5rem;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    position: relative; overflow: hidden;
+    transition: background 0.25s;
+  }
+  .sensor-card:hover { background: var(--navy-light); }
+  .sensor-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 2px; background: var(--cyan);
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .sensor-card:hover::before { transform: scaleX(1); }
+  .sensor-ring-wrap {
+    position: relative; width: 76px; height: 76px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.25rem;
+  }
+  .sensor-ring {
+    position: absolute; inset: 0;
+    border: 1px solid rgba(0,212,255,0.5);
+    border-radius: 50%;
+    animation: sensorPulse 2.4s ease-out infinite;
+  }
+  .sensor-ring.delay { animation-delay: 1.2s; }
+  .sensor-icon {
+    position: relative; z-index: 1; font-size: 1.6rem;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--navy);
+    border: 1px solid rgba(0,212,255,0.3);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .sensor-label { font-size: 0.9rem; font-weight: 600; color: var(--white); margin-bottom: 0.3rem; }
+  .sensor-sub { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 0.03em; }
+  @keyframes sensorPulse {
+    0% { transform: scale(0.7); opacity: 0.7; }
+    100% { transform: scale(1.7); opacity: 0; }
+  }
+  footer {
+    background: var(--navy-mid);
+    border-top: 1px solid rgba(0,212,255,0.08);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+  .footer-logo {
+    font-family: 'Orbitron', sans-serif; font-weight: 900; font-size: 1.4rem;
+    color: var(--cyan); letter-spacing: 0.1em; margin-bottom: 1rem;
+  }
+  .footer-tagline { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2rem; }
+  .footer-links { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+  .footer-links a { font-size: 0.8rem; color: var(--slate-light); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--cyan); }
+  .footer-copy { font-size: 0.75rem; color: var(--slate); }
+
+  @media (max-width: 900px) {
+    .philosophy-grid { grid-template-columns: 1fr; }
+    .dims-inner { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">VACUBOT<span style="color:var(--white);font-weight:400"> PRO</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#features">Features</a></li>
+    <li><a href="index.html#specs">Specs</a></li>
+    <li><a href="index.html#how-it-works">How it works</a></li>
+    <li><a href="index.html#gallery">Gallery</a></li>
+    <li><a href="design.html" class="active">Design</a></li>
+    <li><a href="#control-modes">Control Modes</a></li>
+    <li><a href="#contribute">Contribute</a></li>
+    <li><a href="index.html#team">Team</a></li>
+  </ul>
+  <a href="index.html#specs" class="btn-primary" style="font-size:0.75rem;padding:0.6rem 1.4rem">View Specs</a>
+</nav>
+
+<!-- HERO -->
+<section class="dhero">
+  <div class="dhero-bg-photo"></div>
+  <div class="dhero-bg-fade"></div>
+  <div class="dhero-bg-grid"></div>
+  <div class="dhero-eyebrow">HOW IT WORKS</div>
+  <h1>Three ways to<br><span class="accent">clean</span>, one robot.</h1>
+  <p class="dhero-desc">VacuBot Pro X1 switches between object avoidance, line follow, and manual WiFi control — while it vacuums dust and logs room temperature and humidity as it goes.</p>
+</section>
+
+<!-- CONTROL MODES -->
+<section id="control-modes">
+  <div class="container">
+    <div class="section-label">Control Modes</div>
+    <h2 class="section-title">Three ways to<br>drive the robot</h2>
+    <p class="section-desc">Switch modes depending on the room, the floor plan, or whether you just want to take the wheel yourself.</p>
+
+    <div class="philosophy-grid">
+      <div class="philosophy-card">
+        <span class="philosophy-mark">MODE / 01</span>
+        <h3>Object Avoidance</h3>
+        <p>Infrared and bump sensors detect furniture, walls, and obstacles in real time, steering the robot around them without getting stuck.</p>
+      </div>
+      <div class="philosophy-card">
+        <span class="philosophy-mark">MODE / 02</span>
+        <h3>Line Follow</h3>
+        <p>An IR line sensor tracks a marked path on the floor, letting the robot follow a fixed route through a room or between rooms.</p>
+      </div>
+      <div class="philosophy-card">
+        <span class="philosophy-mark">MODE / 03</span>
+        <h3>WiFi Control (Manual)</h3>
+        <p>Drive the robot yourself from a phone or browser over WiFi — forward, back, left, right — for spot cleaning exactly where you want it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SENSING & CLEANING -->
+<section class="materials" id="sensing">
+  <div class="container">
+    <div class="section-label">Sensing &amp; Cleaning</div>
+    <h2 class="section-title">What it does<br>while it drives</h2>
+    <p class="section-desc">Cleaning and environment sensing run continuously, whichever control mode is active.</p>
+
+    <div class="sensor-grid">
+      <div class="sensor-card">
+        <div class="sensor-ring-wrap">
+          <div class="sensor-ring"></div>
+          <div class="sensor-ring delay"></div>
+          <div class="sensor-icon">🧹</div>
+        </div>
+        <div class="sensor-label">Dust Suction</div>
+        <div class="sensor-sub">Active while driving</div>
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-ring-wrap">
+          <div class="sensor-ring"></div>
+          <div class="sensor-ring delay"></div>
+          <div class="sensor-icon">🌡️</div>
+        </div>
+        <div class="sensor-label">Temperature Reading</div>
+        <div class="sensor-sub">Logged continuously</div>
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-ring-wrap">
+          <div class="sensor-ring"></div>
+          <div class="sensor-ring delay"></div>
+          <div class="sensor-icon">💧</div>
+        </div>
+        <div class="sensor-label">Humidity Reading</div>
+        <div class="sensor-sub">Logged continuously</div>
+      </div>
+      <div class="sensor-card">
+        <div class="sensor-ring-wrap">
+          <div class="sensor-ring"></div>
+          <div class="sensor-ring delay"></div>
+          <div class="sensor-icon">📶</div>
+        </div>
+        <div class="sensor-label">WiFi Telemetry</div>
+        <div class="sensor-sub">Streamed live</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTRIBUTE / SHOWCASE -->
+<section class="contribute" id="contribute">
+  <div class="container">
+    <div class="section-label">Showcase</div>
+    <h2 class="section-title">Build photos,<br>footage &amp; code</h2>
+    <p class="section-desc">A look at the build: unit photography, walk-through footage, and the firmware behind the three control modes.</p>
+
+    <div class="showcase-tabs">
+      <button class="showcase-tab active" data-panel="panel-photos" type="button">Photos</button>
+      <button class="showcase-tab" data-panel="panel-videos" type="button">Videos</button>
+      <button class="showcase-tab" data-panel="panel-code" type="button">Code</button>
+    </div>
+
+    <!-- PHOTOS -->
+    <div class="showcase-panel active" id="panel-photos">
+      <div class="photo-grid">
+        <div class="photo-card">
+          <div class="photo-thumb" style="background:linear-gradient(135deg,#1E2840,#0A0E1A);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>
+          </div>
+          <div class="photo-info"><h4>Unit — Front</h4><span>Studio shot · Cyan colorway</span></div>
+        </div>
+        <div class="photo-card">
+          <div class="photo-thumb" style="background:linear-gradient(135deg,#131929,#0A0E1A);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>
+          </div>
+          <div class="photo-info"><h4>Teardown — Chassis</h4><span>Sensor array exposed</span></div>
+        </div>
+        <div class="photo-card">
+          <div class="photo-thumb" style="background:linear-gradient(135deg,#1E2840,#131929);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>
+          </div>
+          <div class="photo-info"><h4>PCB — Top Side</h4><span>Control board detail</span></div>
+        </div>
+        <div class="photo-card">
+          <div class="photo-thumb" style="background:linear-gradient(135deg,#0A0E1A,#1E2840);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="1.5"><rect x="3" y="5" width="18" height="14" rx="1"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 15l-5-5-9 9"/></svg>
+          </div>
+          <div class="photo-info"><h4>Colorway Set</h4><span>All three finishes</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDEOS -->
+    <div class="showcase-panel" id="panel-videos">
+      <div class="video-grid">
+        <div class="video-card">
+          <div class="video-frame">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            <span class="duration">2:14</span>
+          </div>
+          <div class="video-info"><h4>Assembly Walk-through</h4><p>Full build from chassis to final colorway shell.</p></div>
+        </div>
+        <div class="video-card">
+          <div class="video-frame">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            <span class="duration">1:02</span>
+          </div>
+          <div class="video-info"><h4>Object Avoidance Demo</h4><p>IR and bump sensors routing around obstacles live.</p></div>
+        </div>
+        <div class="video-card">
+          <div class="video-frame">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            <span class="duration">0:48</span>
+          </div>
+          <div class="video-info"><h4>Line Follow Test</h4><p>Tracking a marked path between two rooms.</p></div>
+        </div>
+        <div class="video-card">
+          <div class="video-frame">
+            <div class="play-btn"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+            <span class="duration">1:35</span>
+          </div>
+          <div class="video-info"><h4>WiFi Manual Control</h4><p>Driving the robot live from a browser session.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CODE -->
+    <div class="showcase-panel" id="panel-code">
+      <div class="code-grid">
+        <div class="code-block">
+          <div class="code-block-header"><h4>obstacle_avoid.ino</h4><span>MODE / 01</span></div>
+          <pre><span class="tok-cm">// Object avoidance — IR + bump sensor loop</span>
+<span class="tok-kw">void</span> loop() {
+  <span class="tok-kw">int</span> distance = readIRSensor();
+  <span class="tok-kw">if</span> (distance &lt; THRESHOLD_CM) {
+    stopMotors();
+    reverse(200);
+    turn(<span class="tok-str">"right"</span>, 300);
+  } <span class="tok-kw">else</span> {
+    driveForward();
+  }
+  logTelemetry(readTemp(), readHumidity());
+}</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><h4>line_follow.ino</h4><span>MODE / 02</span></div>
+          <pre><span class="tok-cm">// Line follow — dual IR line sensor</span>
+<span class="tok-kw">void</span> followLine() {
+  <span class="tok-kw">int</span> left = analogRead(IR_LEFT);
+  <span class="tok-kw">int</span> right = analogRead(IR_RIGHT);
+  <span class="tok-kw">if</span> (left &gt; right) turn(<span class="tok-str">"left"</span>, 50);
+  <span class="tok-kw">else if</span> (right &gt; left) turn(<span class="tok-str">"right"</span>, 50);
+  <span class="tok-kw">else</span> driveForward();
+}</pre>
+        </div>
+        <div class="code-block">
+          <div class="code-block-header"><h4>wifi_control.py</h4><span>MODE / 03</span></div>
+          <pre><span class="tok-cm"># WiFi manual control — command server</span>
+<span class="tok-kw">@app.route</span>(<span class="tok-str">"/drive"</span>, methods=[<span class="tok-str">"POST"</span>])
+<span class="tok-kw">def</span> drive():
+    cmd = request.json[<span class="tok-str">"direction"</span>]
+    robot.send(cmd)
+    <span class="tok-kw">return</span> {<span class="tok-str">"status"</span>: <span class="tok-str">"ok"</span>}</pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const showcaseTabs = document.querySelectorAll('.showcase-tab');
+  showcaseTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      showcaseTabs.forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.showcase-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.panel).classList.add('active');
+    });
+  });
+</script>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">VACUBOT PRO</div>
+  <p class="footer-tagline">Autonomous intelligence for a cleaner home.</p>
+  <div class="footer-links">
+    <a href="index.html#features">Features</a>
+    <a href="index.html#specs">Specifications</a>
+    <a href="index.html#how-it-works">How it works</a>
+    <a href="index.html#gallery">Gallery</a>
+    <a href="design.html">Design</a>
+    <a href="index.html#team">Team</a>
+    <a href="#">GitHub</a>
+    <a href="#">Contact</a>
+  </div>
+  <p class="footer-copy">© 2026 VacuBot Pro — Smart Vacuum Robot Portfolio Project</p>
+</footer>
+
+</body>
+</html>
